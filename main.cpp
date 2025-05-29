@@ -105,7 +105,7 @@ void transferir(int origem, int destino, double quantia) {
     int idxOrigem = buscarPorId(origem);
     int idxDestino = buscarPorId(destino);
     if (idxOrigem == -1 || idxDestino == -1) {
-        cout << "Erro: Usuario de origem ou destino nao encontrado." << endl;
+        cout << "Erro Usuario de origem ou destino nao encontrado." << endl;
         return;
     }
     if (quantia <= 0 || usuarios[idxOrigem]->saldo < quantia) {
@@ -134,4 +134,47 @@ void carregarArquivo(const char* nomeArquivo) {
         inserirUsuario(nome, idade, saldo);
     }
     arq.close();
+}
+
+int main() {
+    usuarios = new Usuario*[capacidade];
+    int comando;
+    while (cin >> comando) {
+        cin.ignore();
+        if (comando == 1) {
+            string linha;
+            getline(cin, linha);
+            char nome[101]; int idade; double saldo;
+            sscanf(linha.c_str(), "%100[^,], %d,%lf", nome, &idade, &saldo);
+            inserirUsuario(nome, idade, saldo);
+        } else if (comando == 2) {
+            int qtd;
+            cin >> qtd;
+            cin.ignore();
+            inserirMultiplos(qtd);
+        } else if (comando == 3) {
+            int id;
+            cin >> id;
+            buscarUsuario(id);
+        } else if (comando == 4) {
+            int origem, destino;
+            double quantia;
+            cin >> origem >> destino >> quantia;
+            transferir(origem, destino, quantia);
+        } else if (comando == 5) {
+            int id;
+            cin >> id;
+            removerUsuario(id);
+        } else if (comando == 6) {
+            string nomeArquivo;
+            getline(cin, nomeArquivo);
+            carregarArquivo(nomeArquivo.c_str());
+        } else {
+            break;
+        }
+    }
+    salvarEmArquivo("usuarios.txt");
+    for (int i = 0; i < totalUsuarios; ++i) delete usuarios[i];
+    delete[] usuarios;
+    return 0;
 }
